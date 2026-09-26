@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ayese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ee; --card:#fffdf9; --ink:#1f2a20; --sub:#68705f; --line:#e2ddd0;
+  --moss:#3c6e47; --moss-ink:#2a4f34; --clay:#a9673f; --stone:#6b6f63; --rust:#b3432b; --sun:#c98f2b;
+  --indigo:#2d3a63; --indigo-ink:#1f2947;
+  --serif:'Fraunces',Georgia,serif; --sans:'Work Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#161a15; --card:#1e241d; --ink:#eef0e8; --sub:#a2ab97; --line:#2c3328; }
+}
+:root[data-theme="dark"]{ --bg:#161a15; --card:#1e241d; --ink:#eef0e8; --sub:#a2ab97; --line:#2c3328; }
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+header{padding:22px 20px 16px;padding-top:calc(22px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line);}
+.brand{display:flex;align-items:center;gap:10px;}
+header h1{margin:0;font-family:var(--serif);font-weight:600;font-size:1.6rem;letter-spacing:-.01em;}
+header p{margin:7px 0 0;color:var(--sub);font-size:.88rem;}
+.tabs{display:flex;border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;}
+.tab{flex:1;padding:13px 4px;text-align:center;background:none;border:none;color:var(--sub);font-family:var(--sans);font-size:.83rem;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;}
+.tab.active{color:var(--indigo-ink);border-bottom-color:var(--indigo);font-weight:600;}
+main{padding:18px 18px 40px;max-width:540px;margin:0 auto;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
+.search-wrap{position:relative;}
+input,select,textarea{
+  width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:.95rem;margin-top:6px;
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--moss);outline-offset:1px;}
+label{font-size:.82rem;color:var(--sub);}
+button.primary{width:100%;padding:13px;background:var(--moss);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-size:.95rem;font-weight:600;cursor:pointer;margin-top:12px;}
+button.primary:active{background:var(--moss-ink);}
+button.ghost{width:100%;padding:10px;background:none;border:1px solid var(--moss);color:var(--moss-ink);border-radius:10px;font-size:.87rem;font-weight:600;cursor:pointer;margin-top:10px;font-family:var(--sans);}
+:root[data-theme="dark"] button.ghost, @media (prefers-color-scheme: dark){button.ghost{color:#8fc79c;}}
+
+/* filter chips */
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px;}
+.chip{padding:6px 12px;border:1px solid var(--line);border-radius:20px;font-size:.8rem;cursor:pointer;user-select:none;color:var(--sub);background:var(--card);}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg);}
+
+/* material groups */
+.group-title{font-family:var(--serif);font-size:1.05rem;font-weight:600;margin:22px 0 2px;padding-left:12px;border-left:4px solid var(--mc);}
+.group-title:first-child{margin-top:0;}
+.group-count{color:var(--sub);font-size:.78rem;font-weight:400;font-family:var(--sans);margin-left:6px;}
+.item-row{display:flex;align-items:center;gap:10px;padding:10px 4px 10px 12px;border-left:3px solid var(--mc);border-bottom:1px solid var(--line);}
+.item-row:last-child{border-bottom:none;}
+.item-row .name{flex:1;font-size:.93rem;}
+.item-row .note{color:var(--sub);font-size:.78rem;}
+
+.score-ring{font-family:var(--serif);font-size:1.55rem;font-weight:600;}
+.area-card h3{margin:0 0 3px;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--serif);font-size:1.15rem;font-weight:600;}
+.area-card .sub{color:var(--sub);font-size:.8rem;margin-bottom:10px;}
+.trend{font-family:var(--sans);font-size:.76rem;font-weight:600;}
+.trend.up{color:var(--moss-ink);} .trend.down{color:var(--rust);} .trend.flat{color:var(--sub);}
+.bar-track{height:7px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:5px;}
+.bar-fill{height:100%;background:var(--clay);}
+.report-line{font-size:.85rem;padding:7px 0;border-bottom:1px dashed var(--line);}
+.report-line:last-child{border-bottom:none;}
+.sev{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;}
+.empty{color:var(--sub);text-align:center;padding:26px 0;font-size:.9rem;}
+.stat-row{display:flex;gap:10px;}
+.stat{flex:1;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 6px;}
+.stat .num{font-family:var(--serif);font-size:1.7rem;font-weight:600;color:var(--moss-ink);}
+.stat .lbl{font-size:.72rem;color:var(--sub);margin-top:2px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="var(--indigo)" stroke-width="2"/>
+      <path d="M20 30C20 30 11 25 11 17C11 11.5 15 8 20 8C25 8 29 11.5 29 17C29 25 20 30 20 30Z" fill="var(--moss)"/>
+      <path d="M20 30V16" stroke="var(--bg)" stroke-width="1.4"/>
+    </svg>
+    <h1>Ayese</h1>
+  </div>
+  <p>See it. Sort it. Report it. Improve it — together. Community-powered environmental action, built for Nigeria.</p>
+</header>
+<div class="tabs">
+  <button class="tab active" data-tab="guide">Guide</button>
+  <button class="tab" data-tab="report">Report</button>
+  <button class="tab" data-tab="areas">Areas</button>
+  <button class="tab" data-tab="dashboard">Dashboard</button>
+  <button class="tab" data-tab="resources">Resources</button>
+  <button class="tab" data-tab="me">My Impact</button>
+</div>
+<main>
+  <div id="guide" class="panel">
+    <div class="card">
+      <input id="search" placeholder="Search a material — pizza box, foam, wire..." />
+      <div class="chip-row" id="filterChips">
+        <span class="chip on" data-filter="all">All</span>
+        <span class="chip" data-filter="recycle">Recyclable</span>
+        <span class="chip" data-filter="compost">Compostable</span>
+        <span class="chip" data-filter="trash">Trash</span>
+        <span class="chip" data-filter="hazard">Hazardous</span>
+      </div>
+    </div>
+    <div id="itemGroups"></div>
+  </div>
+
+  <div id="report" class="panel" style="display:none;">
+    <div class="card">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Report litter in your area</h3>
+      <label>Area or neighborhood name</label>
+      <input id="areaName" placeholder="e.g. Ikeja GRA, Riverside Park" />
+      <button type="button" class="ghost" id="useLocation" style="margin-top:8px;">📍 Attach my location (optional)</button>
+      <p id="locStatus" style="font-size:.78rem;color:var(--sub);margin:6px 0 0;"></p>
+      <label>What did you see?</label>
+      <textarea id="areaDesc" rows="2" placeholder="e.g. overflowing bins near the entrance"></textarea>
+      <label>Type of litter (tap all that apply)</label>
+      <div class="chip-row" id="catChips">
+        <span class="chip" data-cat="recycle">Recyclables</span>
+        <span class="chip" data-cat="compost">Food or organic</span>
+        <span class="chip" data-cat="trash">General trash</span>
+        <span class="chip" data-cat="hazard">Hazardous</span>
+      </div>
+      <label>Severity</label>
+      <select id="areaSeverity">
+        <option value="1">1 — Minor</option>
+        <option value="2">2 — Noticeable</option>
+        <option value="3" selected>3 — Moderate</option>
+        <option value="4">4 — Bad</option>
+        <option value="5">5 — Severe</option>
+      </select>
+      <label>Photo evidence (optional)</label>
+      <input type="file" id="photoInput" accept="image/*" />
+      <button class="primary" id="submitReport">Submit report</button>
+      <p id="reportStatus" style="font-size:.8rem;color:var(--sub);margin-bottom:0;"></p>
+      <p style="font-size:.75rem;color:var(--sub);margin:8px 0 0;">Reports are visible to everyone using Ayese — don't include personal details you don't want shared.</p>
+    </div>
+  </div>
+
+  <div id="areas" class="panel" style="display:none;">
+    <div id="mapCard"></div>
+    <div id="trendingCard"></div>
+    <div id="areaSummaries"></div>
+  </div>
+
+  <div id="dashboard" class="panel" style="display:none;">
+    <div class="stat-row" style="flex-wrap:wrap;">
+      <div class="stat"><div class="num" id="dashTotal">0</div><div class="lbl">total reports</div></div>
+      <div class="stat"><div class="num" id="dashResolved">0</div><div class="lbl">marked cleaned</div></div>
+      <div class="stat"><div class="num" id="dashAreas">0</div><div class="lbl">areas tracked</div></div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Waste composition (all reports)</h3>
+      <div id="wasteComposition"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Recurring problem areas</h3>
+      <div id="recurringAreas"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Does cleanup work?</h3>
+      <p id="beforeAfterStat" style="font-size:.85rem;color:var(--sub);margin:0;">Not enough resolved reports yet to measure.</p>
+    </div>
+  </div>
+
+  <div id="resources" class="panel" style="display:none;">
+    <div class="card">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Recycling &amp; collection</h3>
+      <div class="item-row" style="--mc:var(--moss)"><span class="name">Lagos Waste Management Authority (LAWMA)<br><span class="note">Official body handling refuse collection and licensing in Lagos State</span></span></div>
+      <div class="item-row" style="--mc:var(--moss)"><span class="name">Wecyclers<br><span class="note">Social enterprise collecting recyclables from households for cash/rewards, partnered with LAWMA</span></span></div>
+      <div class="item-row" style="--mc:var(--stone)"><span class="name">Your state's waste authority<br><span class="note">Outside Lagos, check your state environmental protection agency for local rules</span></span></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Get involved</h3>
+      <div class="item-row" style="--mc:var(--indigo)"><span class="name">Campus sustainability clubs<br><span class="note">Many Nigerian universities have environmental or sustainability societies — a natural first partner for cleanups</span></span></div>
+      <div class="item-row" style="--mc:var(--indigo)"><span class="name">Local environmental NGOs<br><span class="note">Search for community clean-up or conservation groups active in your city</span></span></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">For local government</h3>
+      <p style="font-size:.85rem;color:var(--sub);margin:0;">The Dashboard tab already gives an aggregate view of recurring problem areas. Turning this into a true municipal tool would mean partnering directly with a state waste authority to share this data — that's a conversation to have once the reporting data is real and consistent.</p>
+    </div>
+  </div>
+
+  <div id="me" class="panel" style="display:none;">
+    <div class="stat-row" style="flex-wrap:wrap;">
+      <div class="stat"><div class="num" id="statStreak">0</div><div class="lbl">day streak</div></div>
+      <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">reports made</div></div>
+      <div class="stat"><div class="num" id="statAdopted">0</div><div class="lbl">areas adopted</div></div>
+      <div class="stat"><div class="num" id="statPoints">0</div><div class="lbl">points</div></div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Badges</h3>
+      <div class="chip-row" id="badgeRow"></div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Adopted areas</h3>
+      <div id="myAreas"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const CAT_META = {
+  recycle:{label:"Recyclable", color:"var(--moss)"},
+  compost:{label:"Compostable", color:"var(--clay)"},
+  trash:{label:"Trash", color:"var(--stone)"},
+  hazard:{label:"Hazardous — special drop-off", color:"var(--rust)"},
+};
+const ITEMS = [
+  ["Cardboard box","recycle"],["Cereal box","recycle"],["Newspaper","recycle"],["Magazine","recycle"],
+  ["Office paper","recycle"],["Aluminum can","recycle"],["Steel/tin can","recycle"],["Glass bottle","recycle"],
+  ["Glass jar","recycle"],["Plastic bottle (PET)","recycle"],["Milk jug (HDPE)","recycle"],["Yogurt cup","recycle"],
+  ["Detergent bottle","recycle"],["Milk carton","recycle"],["Aluminum foil (clean)","recycle"],["Wire hanger","recycle"],
+  ["Paperback book","recycle"],["Textbook","recycle"],["Hardcover book (cover removed)","recycle"],
+  ["Spiral notebook","trash"],["Sticky note pad","trash"],["Egg carton (cardboard)","compost"],["Food scraps","compost"],["Coffee grounds","compost"],
+  ["Tea bags (no plastic)","compost"],["Paper towel (used)","compost"],["Yard waste / leaves","compost"],
+  ["Wood scraps (untreated)","compost"],["Houseplant trimmings","compost"],["Pizza box (greasy)","trash"],
+  ["Plastic bag","trash"],["Plastic film / wrap","trash"],["Styrofoam","trash"],["Chip bag","trash"],
+  ["Candy wrapper","trash"],["Diaper","trash"],["Broken ceramic / mug","trash"],["Mirror / window glass","trash"],
+  ["Wine cork","trash"],["Rubber band","trash"],["Dryer lint","trash"],
+  ["Straws","trash"],["Toothbrush","trash"],["Broken umbrella","trash"],["Battery (single-use)","hazard"],
+  ["Rechargeable battery","hazard"],["Light bulb (CFL/LED)","hazard"],["Electronics / e-waste","hazard"],
+  ["Phone / laptop","hazard"],["Paint can","hazard"],["Motor oil","hazard"],["Propane tank","hazard"],
+  ["Pesticides","hazard"],["Cleaning chemicals","hazard"],["Medication (expired)","hazard"],
+  ["Thermometer (mercury)","hazard"],["Fire extinguisher","hazard"],["Fluorescent tube","hazard"],
+  ["Pure water sachet (nylon)","recycle","Rinse and drop at a WeCyclers or PET point — don't burn"],
+  ["Cellophane shopping bag / \"nylon\"","trash","Most local systems don't process this yet"],
+  ["Scrap metal / iron rod","recycle","Sell to a local scrap dealer (aluminum, iron, copper)"],
+  ["Used generator part","hazard","Take to a scrap or e-waste dealer, not the bin"],
+  ["Used engine oil","hazard","Return to a mechanic workshop or licensed collector"],
+  ["Old phone / computer parts","hazard","Drop at an e-waste point (e.g. Computer Village collection)"],
+  ["Groundnut oil bottle","recycle"],["Cooking ash","compost"],
+  ["Plantain / banana peel","compost"],["Cassava peel","compost"],["Corn husk","compost"],
+];
+const ITEM_NOTES = {}; // populated below from any 3rd array element
+ITEMS.forEach(([name,cat,note])=>{ if(note) ITEM_NOTES[name]=note; });
+
+let activeFilter = "all", searchTerm = "";
+
+function renderItems(){
+  const el = document.getElementById("itemGroups");
+  const f = searchTerm.trim().toLowerCase();
+  const groupsOrder = activeFilter==="all" ? ["recycle","compost","trash","hazard"] : [activeFilter];
+  let html = "";
+  groupsOrder.forEach(cat=>{
+    const rows = ITEMS.filter(([name,c])=>c===cat && name.toLowerCase().includes(f));
+    if(!rows.length) return;
+    const meta = CAT_META[cat];
+    html += `<div class="group-title" style="--mc:${meta.color}">${meta.label}<span class="group-count">${rows.length}</span></div>`;
+    html += `<div class="card" style="padding:2px 0;">`;
+    html += rows.map(([name])=>`<div class="item-row" style="--mc:${meta.color}"><span class="name">${name}${ITEM_NOTES[name] ? `<br><span class="note">${ITEM_NOTES[name]}</span>` : ""}</span></div>`).join("");
+    html += `</div>`;
+  });
+  el.innerHTML = html || `<div class="card empty">No matches — try a different word.</div>`;
+}
+renderItems();
+document.getElementById("search").addEventListener("input", e=>{ searchTerm = e.target.value; renderItems(); });
+document.querySelectorAll("#filterChips .chip").forEach(chip=>{
+  chip.addEventListener("click", ()=>{
+    document.querySelectorAll("#filterChips .chip").forEach(c=>c.classList.remove("on"));
+    chip.classList.add("on");
+    activeFilter = chip.dataset.filter;
+    renderItems();
+  });
+});
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    document.querySelectorAll(".panel").forEach(p=>p.style.display="none");
+    document.getElementById(tab.dataset.tab).style.display="block";
+    if(tab.dataset.tab==="areas") loadReports();
+    if(tab.dataset.tab==="me") loadMyImpact();
+    if(tab.dataset.tab==="dashboard") loadDashboard();
+  });
+});
+
+let selectedCats = new Set();
+document.querySelectorAll("#catChips .chip").forEach(chip=>{
+  chip.addEventListener("click", ()=>{
+    const c = chip.dataset.cat;
+    if(selectedCats.has(c)){ selectedCats.delete(c); chip.classList.remove("on"); }
+    else { selectedCats.add(c); chip.classList.add("on"); }
+  });
+});
+
+let myCoords = null;
+document.getElementById("useLocation").addEventListener("click", ()=>{
+  const locStatus = document.getElementById("locStatus");
+  if(!navigator.geolocation){ locStatus.textContent = "Location isn't available on this device."; return; }
+  locStatus.textContent = "Getting location...";
+  navigator.geolocation.getCurrentPosition(
+    pos=>{ myCoords = {lat: pos.coords.latitude, lng: pos.coords.longitude}; locStatus.textContent = "Location attached ✓"; },
+    ()=>{ locStatus.textContent = "Couldn't get location — you can still submit without it."; },
+    {timeout:8000}
+  );
+});
+
+let db=null, userNs=null, assetsNs=null, myId=null;
+let localReports=[], localAdoptions=[], localFlags=[], localResolutions=[];
+
+async function initBackend(){
+  try{ db = await window.claude.use("db"); }catch(e){ db=null; }
+  try{ userNs = await window.claude.use("user"); myId = userNs ? await userNs.id() : null; }catch(e){ userNs=null; }
+  try{ assetsNs = await window.claude.use("assets"); }catch(e){ assetsNs=null; }
+  if(!myId){
+    try{ myId = localStorage.getItem("ayese_guestid"); }catch(e){}
+    if(!myId){
+      myId = "guest-" + Math.random().toString(36).slice(2,10);
+      try{ localStorage.setItem("ayese_guestid", myId); }catch(e){}
+    }
+  }
+}
+
+async function getReports(){
+  if(db){
+    try{ const snap = await db.collection("reports").get(); return snap.docs ? snap.docs.map(d=>({...d.data(), id:d.id})) : (snap||[]); }
+    catch(e){ return localReports; }
+  }
+  return localReports;
+}
+async function getAdoptions(){
+  if(db){
+    try{ const snap = await db.collection("adoptions").get(); return snap.docs ? snap.docs.map(d=>d.data()) : (snap||[]); }
+    catch(e){ return localAdoptions; }
+  }
+  return localAdoptions;
+}
+async function getFlags(){
+  if(db){ try{ const snap = await db.collection("flags").get(); return snap.docs ? snap.docs.map(d=>d.data()) : (snap||[]); } catch(e){ return localFlags; } }
+  return localFlags;
+}
+async function getResolutions(){
+  if(db){ try{ const snap = await db.collection("resolutions").get(); return snap.docs ? snap.docs.map(d=>d.data()) : (snap||[]); } catch(e){ return localResolutions; } }
+  return localResolutions;
+}
+
+function severityColor(avg){ if(avg<=1.5) return "var(--moss)"; if(avg<=3) return "var(--sun)"; return "var(--rust)"; }
+function dayKey(ts){ return new Date(ts).toISOString().slice(0,10); }
+
+async function loadReports(){
+  const [reports, flags, resolutions] = await Promise.all([getReports(), getFlags(), getResolutions()]);
+  renderMap(reports);
+  renderTrending(reports);
+  renderAreaSummaries(reports, flags, resolutions);
+}
+
+function renderMap(reports){
+  const el = document.getElementById("mapCard");
+  const pts = reports.filter(r=>r.coords);
+  if(pts.length < 2){ el.innerHTML = `<div class="card empty">Schematic map appears once at least 2 located reports come in.</div>`; return; }
+  const lats = pts.map(p=>p.coords.lat), lngs = pts.map(p=>p.coords.lng);
+  const minLat=Math.min(...lats), maxLat=Math.max(...lats), minLng=Math.min(...lngs), maxLng=Math.max(...lngs);
+  const W=280,H=160,pad=16;
+  const dots = pts.map(p=>{
+    const x = maxLng>minLng ? pad + (p.coords.lng-minLng)/(maxLng-minLng)*(W-2*pad) : W/2;
+    const y = maxLat>minLat ? H-pad - (p.coords.lat-minLat)/(maxLat-minLat)*(H-2*pad) : H/2;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${severityColor(Number(p.severity))}" opacity="0.85"><title>${(p.area||"").replace(/"/g,"")}</title></circle>`;
+  }).join("");
+  el.innerHTML = `<div class="card"><h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Reported locations (schematic)</h3>
+    <p style="font-size:.78rem;color:var(--sub);margin:0 0 8px;">Relative positions only — not a street map.</p>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;background:var(--bg);border-radius:8px;">${dots}</svg></div>`;
+}
+
+function renderTrending(reports){
+  const el = document.getElementById("trendingCard");
+  const weekAgo = Date.now() - 7*86400000;
+  const byArea = {};
+  reports.forEach(r=>{ const k=(r.area||"Unnamed area").trim(); (byArea[k]=byArea[k]||[]).push(r); });
+  const trending = Object.entries(byArea)
+    .map(([area,list])=>({area, recent: list.filter(r=>r.ts>=weekAgo).length}))
+    .filter(a=>a.recent>=2).sort((a,b)=>b.recent-a.recent).slice(0,3);
+  if(!trending.length){ el.innerHTML=""; return; }
+  el.innerHTML = `<div class="card"><h3 style="margin-top:0;font-family:var(--serif);font-weight:600;">Trending this week</h3>
+    ${trending.map(t=>`<div class="item-row" style="--mc:var(--rust)"><span class="name">${t.area}<br><span class="note">${t.recent} reports in the last 7 days</span></span></div>`).join("")}</div>`;
+}
+
+function renderAreaSummaries(reports, flags, resolutions){
+  const el = document.getElementById("areaSummaries");
+  const flagCounts = {};
+  flags.forEach(f=>{ flagCounts[f.reportId] = (flagCounts[f.reportId]||0)+1; });
+  const resolvedIds = new Set(resolutions.map(r=>r.reportId));
+  const visible = reports.filter(r=>(flagCounts[r.id]||0) < 2);
+  if(!visible.length){ el.innerHTML = `<div class="card empty">No reports yet. Be the first to log your area.</div>`; return; }
+  const byArea = {};
+  visible.forEach(r=>{ const key=(r.area||"Unnamed area").trim(); (byArea[key]=byArea[key]||[]).push(r); });
+
+  const cards = Object.entries(byArea).sort((a,b)=>b[1].length-a[1].length).map(([area,list])=>{
+    const sorted = [...list].sort((a,b)=>a.ts-b.ts);
+    const avg = sorted.reduce((s,r)=>s+Number(r.severity||3),0)/sorted.length;
+    const score = Math.max(0, Math.round(100 - avg*18));
+
+    let trendHtml = `<span class="trend flat">steady</span>`;
+    if(sorted.length>=4){
+      const mid = Math.floor(sorted.length/2);
+      const olderAvg = sorted.slice(0,mid).reduce((s,r)=>s+Number(r.severity||3),0)/mid;
+      const recentAvg = sorted.slice(mid).reduce((s,r)=>s+Number(r.severity||3),0)/(sorted.length-mid);
+      if(recentAvg < olderAvg - 0.3) trendHtml = `<span class="trend up">improving</span>`;
+      else if(recentAvg > olderAvg + 0.3) trendHtml = `<span class="trend down">worsening</span>`;
+    }
+
+    let divertible=0, total=0;
+    sorted.forEach(r=>{ (r.categories||[]).forEach(c=>{ total++; if(c==="recycle"||c==="compost") divertible++; }); });
+    const divertPct = total ? Math.round((divertible/total)*100) : null;
+
+    const lines = sorted.slice(-4).reverse().map(r=>{
+      const isResolved = resolvedIds.has(r.id);
+      return `<div class="report-line">
+        <span class="sev" style="background:${severityColor(Number(r.severity))}"></span>${r.description||"(no details)"} — severity ${r.severity}${r.coords?" · 📍":""}${isResolved?" · ✅ cleaned":""}
+        ${r.photoUrl?`<br><img src="${r.photoUrl}" style="max-width:100%;border-radius:6px;margin-top:4px;" alt="Reported litter photo">`:""}
+        <div style="margin-top:4px;">
+          ${!isResolved?`<button class="ghost" style="margin-top:4px;padding:6px;font-size:.75rem;" data-resolve="${r.id}">Mark as cleaned</button>`:""}
+          <button class="ghost" style="margin-top:4px;padding:6px;font-size:.75rem;color:var(--rust);border-color:var(--rust);" data-flag="${r.id}">Flag as spam</button>
+        </div>
+      </div>`;
+    }).join("");
+
+    return `<div class="card area-card">
+      <h3>${area} <span>${trendHtml}</span></h3>
+      <div class="sub">${list.length} report${list.length>1?"s":""} · cleanliness score
+        <span class="score-ring" style="color:${severityColor(avg)}"> ${score}</span>/100
+      </div>
+      ${divertPct!==null ? `<div style="font-size:.85rem;margin-bottom:6px;">${divertPct}% of tagged litter here was recyclable or compostable material that missed a bin
+        <div class="bar-track"><div class="bar-fill" style="width:${divertPct}%"></div></div></div>` : ""}
+      ${lines}
+      <button class="ghost" data-adopt="${area}">Adopt this area</button>
+    </div>`;
+  }).join("");
+  el.innerHTML = cards;
+
+  el.querySelectorAll("[data-adopt]").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const area = btn.dataset.adopt;
+      const rec = {userId: myId, area, ts: Date.now()};
+      if(db){ try{ await db.collection("adoptions").add(rec); }catch(e){ localAdoptions.push(rec); } }
+      else { localAdoptions.push(rec); }
+      btn.textContent = "Adopted";
+      btn.disabled = true;
+    });
+  });
+  el.querySelectorAll("[data-flag]").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const rec = {reportId: btn.dataset.flag, userId: myId, ts: Date.now()};
+      if(db){ try{ await db.collection("flags").add(rec); }catch(e){ localFlags.push(rec); } } else { localFlags.push(rec); }
+      btn.textContent = "Flagged"; btn.disabled = true;
+      loadReports();
+    });
+  });
+  el.querySelectorAll("[data-resolve]").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const rec = {reportId: btn.dataset.resolve, userId: myId, ts: Date.now()};
+      if(db){ try{ await db.collection("resolutions").add(rec); }catch(e){ localResolutions.push(rec); } } else { localResolutions.push(rec); }
+      btn.textContent = "Cleaned ✓"; btn.disabled = true;
+    });
+  });
+}
+
+async function loadDashboard(){
+  const [reports, resolutions] = await Promise.all([getReports(), getResolutions()]);
+  document.getElementById("dashTotal").textContent = reports.length;
+  document.getElementById("dashResolved").textContent = resolutions.length;
+  const areaSet = new Set(reports.map(r=>(r.area||"").trim()).filter(Boolean));
+  document.getElementById("dashAreas").textContent = areaSet.size;
+
+  const counts = {recycle:0, compost:0, trash:0, hazard:0};
+  reports.forEach(r=>(r.categories||[]).forEach(c=>{ if(counts[c]!==undefined) counts[c]++; }));
+  const totalTags = Object.values(counts).reduce((a,b)=>a+b,0) || 1;
+  const compEl = document.getElementById("wasteComposition");
+  compEl.innerHTML = Object.entries(counts).map(([k,v])=>{
+    const pct = Math.round(v/totalTags*100);
+    const meta = CAT_META[k];
+    return `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:.85rem;"><span>${meta.label}</span><span>${pct}%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${meta.color}"></div></div></div>`;
+  }).join("");
+
+  const byArea = {};
+  reports.forEach(r=>{ const k=(r.area||"Unnamed area").trim(); byArea[k]=(byArea[k]||0)+1; });
+  const top = Object.entries(byArea).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById("recurringAreas").innerHTML = top.length ? top.map(([a,c])=>
+    `<div class="item-row" style="--mc:var(--clay)"><span class="name">${a}</span></div><div style="font-size:.78rem;color:var(--sub);margin:-6px 0 6px 12px;">${c} reports</div>`
+  ).join("") : `<div class="empty">No data yet.</div>`;
+
+  const resolvedIds = new Set(resolutions.map(r=>r.reportId));
+  const resolvedReports = reports.filter(r=>resolvedIds.has(r.id));
+  if(resolvedReports.length>=3){
+    const byAreaResolved = {};
+    resolvedReports.forEach(r=>{ const k=(r.area||"").trim(); (byAreaResolved[k]=byAreaResolved[k]||[]).push(r); });
+    let improved=0, checked=0;
+    Object.values(byAreaResolved).forEach(list=>{
+      const areaAll = reports.filter(r=>(r.area||"").trim()===((list[0].area||"").trim()));
+      const resolveTimes = list.map(r=>resolutions.find(x=>x.reportId===r.id).ts);
+      const afterTs = Math.max(...resolveTimes);
+      const before = areaAll.filter(r=>r.ts<afterTs);
+      const after = areaAll.filter(r=>r.ts>=afterTs);
+      if(before.length && after.length){
+        checked++;
+        const bAvg = before.reduce((s,r)=>s+Number(r.severity||3),0)/before.length;
+        const aAvg = after.reduce((s,r)=>s+Number(r.severity||3),0)/after.length;
+        if(aAvg < bAvg) improved++;
+      }
+    });
+    document.getElementById("beforeAfterStat").textContent = checked
+      ? `In ${improved} of ${checked} areas measured, severity dropped after a cleanup was marked — early signal that intervention helps.`
+      : "Not enough before/after data yet to measure.";
+  }
+}
+
+document.getElementById("submitReport").addEventListener("click", async ()=>{
+  const area = document.getElementById("areaName").value.trim();
+  const description = document.getElementById("areaDesc").value.trim();
+  const severity = document.getElementById("areaSeverity").value;
+  const status = document.getElementById("reportStatus");
+  const fileInput = document.getElementById("photoInput");
+  if(!area){ status.textContent = "Please enter an area name."; return; }
+  status.textContent = "Submitting...";
+  let photoUrl = null;
+  if(fileInput.files[0] && assetsNs){
+    try{ const res = await assetsNs.upload(fileInput.files[0]); photoUrl = res.url; }
+    catch(e){ /* photo optional — continue without it */ }
+  }
+  const report = {area, description, severity, categories:[...selectedCats], ts: Date.now(), userId: myId, coords: myCoords, photoUrl};
+  try{
+    if(db){ await db.collection("reports").add(report); } else { report.id = "local-"+Date.now(); localReports.push(report); }
+    document.getElementById("areaName").value="";
+    document.getElementById("areaDesc").value="";
+    fileInput.value="";
+    selectedCats.clear();
+    myCoords = null;
+    document.getElementById("locStatus").textContent = "";
+    document.querySelectorAll("#catChips .chip").forEach(c=>c.classList.remove("on"));
+    status.textContent = "Report submitted. Thank you.";
+  }catch(e){
+    report.id = "local-"+Date.now(); localReports.push(report);
+    status.textContent = "Saved locally — couldn't sync.";
+  }
+});
+
+async function loadMyImpact(){
+  const [reports, adoptions] = await Promise.all([getReports(), getAdoptions()]);
+  const mine = reports.filter(r=>r.userId===myId);
+  document.getElementById("statTotal").textContent = mine.length;
+
+  const days = [...new Set(mine.map(r=>dayKey(r.ts)))].sort().reverse();
+  let streak = 0;
+  if(days.length){
+    let cursor = new Date(); cursor.setHours(0,0,0,0);
+    for(const d of days){
+      const key = cursor.toISOString().slice(0,10);
+      if(d===key){ streak++; cursor.setDate(cursor.getDate()-1); }
+      else if(d < key) break;
+    }
+  }
+  document.getElementById("statStreak").textContent = streak;
+
+  const myAdopted = adoptions.filter(a=>a.userId===myId).map(a=>a.area);
+  const uniqueAreas = [...new Set(myAdopted)];
+  document.getElementById("statAdopted").textContent = uniqueAreas.length;
+  const el = document.getElementById("myAreas");
+  el.innerHTML = uniqueAreas.length ? uniqueAreas.map(a=>`<div class="item-row" style="--mc:var(--moss)"><span class="name">${a}</span></div>`).join("")
+    : `<div class="empty">No areas adopted yet — visit the Areas tab.</div>`;
+
+  const badges = [];
+  if(mine.length>=1) badges.push("First Report");
+  if(mine.length>=5) badges.push("5 Reports");
+  if(mine.length>=20) badges.push("20 Reports");
+  if(streak>=3) badges.push("3-Day Streak");
+  if(streak>=7) badges.push("7-Day Streak");
+  if(uniqueAreas.length>=1) badges.push("Area Guardian");
+  if(mine.some(r=>r.coords)) badges.push("Located a Report");
+  const badgeEl = document.getElementById("badgeRow");
+  badgeEl.innerHTML = badges.length ? badges.map(b=>`<span class="chip on">${b}</span>`).join("")
+    : `<span style="color:var(--sub);font-size:.85rem;">No badges yet — submit your first report to start earning them.</span>`;
+
+  const resolutions = await getResolutions();
+  const myResolutions = resolutions.filter(r=>r.userId===myId).length;
+  const points = mine.length*10 + uniqueAreas.length*25 + myResolutions*50;
+  document.getElementById("statPoints").textContent = points;
+}
+
+initBackend();
+</script>
+</body>
+</html>

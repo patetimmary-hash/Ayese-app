@@ -1,6 +1,18 @@
 {
   "previewPort": 3000,
-  "healthPath": "/",
+  "healthPath": "/api/config",
   "startCommand": "docker compose -f docker-compose.base44.yml up -d",
-  "secrets": []
+  "secrets": [
+    {
+      "name": "JWT_SECRET",
+      "description": "Secret used to sign JWT auth tokens. Auto-generated for development; replace with a strong random string for production.",
+      "requiredAtBoot": true,
+      "generatedForDevelopment": true
+    },
+    {
+      "name": "GOOGLE_CLIENT_ID",
+      "description": "Google OAuth 2.0 Client ID for Google Sign-In. Create one at https://console.cloud.google.com/apis/credentials (OAuth client → Web application). Add the preview origin as an Authorized JavaScript origin. Optional — the app works without it (email/password auth only).",
+      "requiredAtBoot": false
+    }
+  ]
 }
